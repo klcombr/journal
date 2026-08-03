@@ -1,0 +1,45 @@
+name: daily-entry
+
+on:
+  schedule:
+    - cron: "30 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Random sleep (varies commit time)
+        run: sleep $(( RANDOM % 10800 ))
+
+      - name: 90% chance to commit (skip 10%)
+        run: |
+          if [ $(( RANDOM % 100 )) -ge 90 ]; then
+            echo "Skipping today (10% roll)."
+            echo "SKIP=1" >> "$GITHUB_ENV"
+          else
+            echo "Rolled in the 90%, committing."
+            echo "SKIP=0" >> "$GITHUB_ENV"
+          fi
+
+      - name: Append daily entry
+        if: env.SKIP != '1'
+        run: |
+          LINE="- $(date -u +%Y-%m-%dT%H:%M:%SZ) entry"
+          echo "$LINE" >> journal.md
+          echo "wrote: $LINE"
+
+      - name: Commit and push
+        if: env.SKIP != '1'
+        run: |
+          git config user.name "KL"
+          git config user.email "181868205+kyxenpi@users.noreply.github.com"
+          git add .
+          git commit -m "daily entry"
+          git push
