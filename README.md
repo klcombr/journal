@@ -1,0 +1,2 @@
+# journal
+Personal journal CLI
