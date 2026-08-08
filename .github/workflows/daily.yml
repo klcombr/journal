@@ -18,9 +18,9 @@ jobs:
       - name: Random sleep (varies commit time)
         run: sleep $(( RANDOM % 10800 ))
 
-      - name: Pick number of commits (1-10)
+      - name: Pick number of commits (1-30)
         run: |
-          N=$(( (RANDOM % 10) + 1 ))
+          N=$(( (RANDOM % 30) + 1 ))
           echo "Will make $N commits today."
           echo "N=$N" >> "$GITHUB_ENV"
 
