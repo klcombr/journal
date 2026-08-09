@@ -1,5 +1,11 @@
 # Render Blueprint — https://render.com/docs/blueprint-spec
 # Cria o sync server do journal com um clique (plano free).
+#
+# PERSISTENCE on free tier (no disks allowed):
+#   Add a Supabase Postgres free database and set the env var DATABASE_URL
+#   (or JOURNAL_DATABASE_URL) in the Render dashboard to its connection
+#   string. The server then persists to Postgres, which survives redeploys.
+#   Alternatively switch plan to "starter" and uncomment the `disk` block.
 services:
   - type: web
     name: journal-server
@@ -14,7 +20,8 @@ services:
         generateValue: true
       - key: JOURNAL_CORS_ORIGINS
         value: https://klcombr.github.io
-    disk:
-      name: journal-data
-      mountPath: /data
-      sizeGB: 1
+    # --- persistence: disk on starter plan (~$7/mo) ---
+    # disk:
+    #   name: journal-data
+    #   mountPath: /data
+    #   sizeGB: 1
