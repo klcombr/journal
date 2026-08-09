@@ -10,7 +10,7 @@ python -m venv .venv
 .venv/bin/uvicorn journal_server.app:app --host 127.0.0.1 --port 8000
 ```
 
-Or with Docker (SQLite volume at `/srv`):
+Or with Docker (SQLite volume at `/srv`; build from the repo root):
 
 ```bash
 docker build -t journal-server .

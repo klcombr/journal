@@ -1,10 +1,10 @@
 FROM python:3.13-slim
 
 WORKDIR /srv
-COPY requirements.txt .
+COPY apps/server/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY journal_server ./journal_server
+COPY apps/server/journal_server ./journal_server
 
 # SQLite lives on the container filesystem. On Render's free tier that is
 # ephemeral (lost on redeploy); with a persistent disk mounted at /data

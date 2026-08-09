@@ -12,7 +12,7 @@ services:
     runtime: docker
     repo: https://github.com/klcombr/journal
     plan: free
-    dockerfilePath: ./apps/server/Dockerfile
+    dockerfilePath: ./Dockerfile
     autoDeploy: true
     healthCheckPath: /api/health
     envVars:
