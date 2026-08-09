@@ -20,7 +20,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .auth import decode_token, hash_password, make_token, verify_password
 from .db import get_db, init_db
 from .ratelimit import allow_login, allow_register
-from .schemas import AuthIn, AuthOut, EntryIn, EntryOut
+from .schemas import AuthIn, AuthOut, EntryIn, EntryOut, EntryUpdate
 
 app = FastAPI(title="journal-server", version="2.0.0")
 
@@ -35,7 +35,7 @@ _cors_origins = [
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_cors_origins,
-    allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type"],
 )
 
@@ -148,6 +148,26 @@ def upsert_entry(body: EntryIn, user=Depends(_current_user)):
             "SELECT * FROM entries WHERE id = ? AND user_id = ?", (body.id, user_id)
         ).fetchone()
     _broadcast(user_id, "created", _row_to_out(row))
+    return _row_to_out(row)
+
+
+@app.put("/api/entries/{entry_id}")
+def update_entry(entry_id: str, body: EntryUpdate, user=Depends(_current_user)):
+    user_id, _ = user
+    with get_db() as db:
+        row = db.execute(
+            "SELECT * FROM entries WHERE id = ? AND user_id = ?", (entry_id, user_id)
+        ).fetchone()
+        if not row:
+            raise HTTPException(404, "entry not found")
+        db.execute(
+            "UPDATE entries SET body = ?, updated_at = ?, deleted = ? WHERE id = ? AND user_id = ?",
+            (body.body, body.updated_at, int(body.deleted), entry_id, user_id),
+        )
+        row = db.execute(
+            "SELECT * FROM entries WHERE id = ? AND user_id = ?", (entry_id, user_id)
+        ).fetchone()
+    _broadcast(user_id, "updated", _row_to_out(row))
     return _row_to_out(row)
 
 

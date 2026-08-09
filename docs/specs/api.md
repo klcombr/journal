@@ -1,4 +1,4 @@
-# journal — API Specification v1
+# journal — API Specification v2
 
 Base URL: `https://<host>` (local dev: `http://127.0.0.1:8000`)
 
@@ -37,6 +37,15 @@ Create or overwrite (upsert) an entry by `id`. Server rejects payloads whose
 
 → `201 { id, body, created_at, updated_at, deleted }`
 
+### `PUT /api/entries/{id}`
+```json
+{ "body": "new text", "updated_at": "ISO" }
+```
+Update `body` (and optional `deleted`) of an existing entry. `id` and
+`created_at` are kept from the stored row.
+
+→ `200 { id, body, created_at, updated_at, deleted }` · `404` if missing
+
 ### `DELETE /api/entries/{id}`
 Soft-delete (tombstone) — the entry stays in the list with `deleted: true`.
 
@@ -47,18 +56,23 @@ Soft-delete (tombstone) — the entry stays in the list with `deleted: true`.
 
 ## Realtime — WebSocket
 
-### `WS /ws?token=<jwt>`
-Authenticated with the token as a query parameter.
+### `WS /ws`
+The token is sent as the **first client message** — never in the URL — so it
+cannot leak into access/proxy logs:
 
-Server pushes JSON events to every connected client of that user:
+```json
+{ "token": "<jwt>" }
+```
+
+Server replies `{ "type": "auth_ok" }`, then replays the entry list:
+```json
+{ "type": "snapshot", "entries": [ ... ] }
+```
+
+Server then pushes events to every connected client of that user:
 
 ```json
 { "type": "entry", "action": "created" | "updated" | "deleted", "entry": { ... } }
-```
-
-On connect, the server replays the current entry list:
-```json
-{ "type": "snapshot", "entries": [ ... ] }
 ```
 
 ## Sync strategy (client side)

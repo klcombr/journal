@@ -21,9 +21,12 @@ Then open <http://127.0.0.1:8080>.
 ## Features
 
 - Register / login with the sync server (JWT stored in `localStorage`).
-- Add, edit and delete entries.
-- Real-time: connected clients see new entries instantly over WebSocket.
+- Add, edit (inline) and delete entries — delete asks for confirmation.
+- Entries grouped by day with "today"/"yesterday" labels.
+- Real-time: connected clients see new entries instantly over WebSocket,
+  with automatic reconnect (exponential backoff).
 - Works offline after load (entries buffered in memory, sync on next write).
+- Character counter, loading states, toast feedback.
 
 ## Deploy
 

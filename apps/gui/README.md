@@ -5,9 +5,13 @@ Desktop client for journal — Python + Tkinter, no external dependencies.
 ## Features
 
 - Local journal file (same markdown format as the CLI).
-- Account login/register against the journal server.
-- One-click sync (push + pull).
+- Account login/register against the journal server (card layout, Enter to submit).
+- One-click sync (push + pull) with status feedback.
 - Auto-refresh of server entries.
+- Entry list grouped by day with "today"/"yesterday" labels.
+- Delete with confirmation (double-click, Delete or Enter on selection).
+- Pick any journal file with the "open…" button.
+- Keyboard-friendly: Enter adds an entry, Enter/Delete removes the selection.
 
 ## Run
 

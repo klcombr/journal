@@ -1,6 +1,28 @@
 (function () {
   "use strict";
 
+  /* ---------- Copy code block ---------- */
+  var copyBtn = document.querySelector(".code-copy");
+  if (copyBtn) {
+    copyBtn.addEventListener("click", function () {
+      var pre = document.querySelector(copyBtn.getAttribute("data-copy"));
+      var text = pre ? pre.textContent : "";
+      var done = function () {
+        copyBtn.textContent = "copied ✓";
+        copyBtn.classList.add("copied");
+        setTimeout(function () {
+          copyBtn.textContent = "copy";
+          copyBtn.classList.remove("copied");
+        }, 1600);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(done);
+      } else {
+        done();
+      }
+    });
+  }
+
   /* ---------- Mobile menu ---------- */
   var menuBtn = document.getElementById("menu-toggle");
   var navLinks = document.querySelector(".nav-links");

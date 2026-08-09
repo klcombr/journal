@@ -22,6 +22,12 @@ class EntryIn(BaseModel):
     deleted: bool = False
 
 
+class EntryUpdate(BaseModel):
+    body: str = ""
+    updated_at: str
+    deleted: bool = False
+
+
 class EntryOut(BaseModel):
     id: str
     body: str

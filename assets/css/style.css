@@ -26,6 +26,11 @@ body {
 
 a { color: var(--black); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
 a:hover { background: var(--black); color: var(--paper); text-decoration: none; }
+:focus-visible {
+  outline: 3px solid var(--black);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
 code {
   font-family: var(--mono);
   font-size: 0.88em;
@@ -181,6 +186,7 @@ code {
   transition: transform 0.06s ease, box-shadow 0.06s ease;
 }
 .btn:hover { transform: translate(4px, 4px); box-shadow: none; }
+.btn:active { transform: translate(6px, 6px); }
 .btn-primary { background: var(--black); color: var(--paper); }
 .btn-primary:hover { color: var(--paper); }
 .btn-ghost { background: var(--white); color: var(--black); }
@@ -342,7 +348,24 @@ code {
   text-transform: uppercase;
   color: var(--gray);
   border-bottom: 2px solid var(--gray-dark);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
+.code-copy {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--paper);
+  background: none;
+  border: 2px solid var(--gray);
+  padding: 4px 10px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+.code-copy:hover { background: var(--paper); color: var(--black); border-color: var(--paper); }
+.code-copy.copied { background: var(--paper); color: var(--black); border-color: var(--paper); }
 .code-block pre { padding: 20px 22px; overflow-x: auto; }
 .code-block code {
   font-family: var(--mono);

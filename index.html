@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>journal — a tiny personal journal CLI</title>
-  <meta name="description" content="journal is a tiny personal journal CLI. Write short entries to a markdown file and keep track of how many days you have logged." />
+  <title>journal — a personal journal for every device</title>
+  <meta name="description" content="journal is a personal journal that lives as plain markdown and syncs in real time across terminal, desktop, web and Android." />
   <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -32,15 +32,16 @@
   </nav>
 
   <header class="hero" id="main">
-    <p class="hero-badge">v0.1.0 · MIT · <a href="https://github.com/klcombr/journal" target="_blank" rel="noopener">github.com/klcombr/journal</a></p>
+    <p class="hero-badge">v2.0.0 · MIT · <a href="https://github.com/klcombr/journal" target="_blank" rel="noopener">github.com/klcombr/journal</a></p>
     <h1 class="hero-title">Write today.<br /><span class="rev">Remember</span> tomorrow.</h1>
     <p class="hero-sub">
-      <strong>journal</strong> is a tiny personal journal CLI. Write short entries to a
-      markdown file and keep track of how many days you have logged — without leaving
-      your terminal.
+      <strong>journal</strong> keeps your life as plain markdown and syncs it in
+      <strong>real time</strong> — across terminal, desktop, browser and phone.
+      One journal. Every device.
     </p>
     <div class="hero-actions">
-      <a class="btn btn-primary" href="#terminal">Try it live</a>
+      <a class="btn btn-primary" href="apps/web/">Open web app</a>
+      <a class="btn btn-ghost" href="#terminal">See it live</a>
       <a class="btn btn-ghost" href="#docs">Read the docs</a>
     </div>
   </header>
@@ -48,20 +49,20 @@
   <section class="stats" id="stats">
     <div class="stats-inner">
       <div class="stat">
-        <span class="stat-num" data-count="24">0</span>
-        <span class="stat-label">entries</span>
+        <span class="stat-num" data-count="5">0</span>
+        <span class="stat-label">apps</span>
       </div>
       <div class="stat">
-        <span class="stat-num" data-count="6">0</span>
-        <span class="stat-label">days logged</span>
+        <span class="stat-num" data-count="3">0</span>
+        <span class="stat-label">platforms</span>
       </div>
       <div class="stat">
         <span class="stat-num" data-count="0">0</span>
-        <span class="stat-label">lines of setup</span>
+        <span class="stat-label">setup lines</span>
       </div>
       <div class="stat">
-        <span class="stat-num" data-count="35">0</span>
-        <span class="stat-label">lines of code</span>
+        <span class="stat-num" data-count="1">0</span>
+        <span class="stat-label">data format</span>
       </div>
     </div>
   </section>
@@ -78,12 +79,9 @@
         <div class="terminal-body" id="term-body">
           <pre class="term-line"><span class="c-prompt">$</span> <span class="c-cmd">journal add</span> "learned how Actions cron works"</pre>
           <pre class="term-line term-ok">✔ added — 2026-08-08T09:27:47+00:00</pre>
-          <pre class="term-line"><span class="c-prompt">$</span> <span class="c-cmd">journal count</span></pre>
-          <pre class="term-line">6</pre>
+          <pre class="term-line"><span class="c-prompt">$</span> <span class="c-cmd">journal sync</span></pre>
+          <pre class="term-line term-ok">✔ pulled 3 new · pushed 2 · 12 total</pre>
           <pre class="term-line"><span class="c-prompt">$</span> <span class="c-cmd">journal count --days</span></pre>
-          <pre class="term-line term-dim">2026-08-03</pre>
-          <pre class="term-line term-dim">2026-08-04</pre>
-          <pre class="term-line term-dim">2026-08-05</pre>
           <pre class="term-line term-dim">2026-08-06</pre>
           <pre class="term-line term-dim">2026-08-07</pre>
           <pre class="term-line term-dim">2026-08-08</pre>
@@ -180,18 +178,19 @@
     <div class="wrap">
       <h2 class="section-title">Quick <span class="box">start</span></h2>
       <div class="code-block">
-        <div class="code-head">bash</div>
-        <pre><code># 1. install
+        <div class="code-head">terminal · install + sync</div>
+        <button class="code-copy" data-copy="#setup-code" aria-label="Copy">copy</button>
+        <pre id="setup-code"><code># 1. install
 pip install -e .
 
 # 2. write an entry
 journal add "learned how Actions cron works"
 
-# 3. check your streak
-journal count --days
+# 3. create your account + sync
+journal sync --register --base http://127.0.0.1:8000
 
-# 4. optional: point it anywhere
-export JOURNAL_FILE=~/notes/private/journal.md</code></pre>
+# 4. check your streak anywhere
+journal count --days</code></pre>
       </div>
     </div>
   </section>
@@ -210,6 +209,10 @@ export JOURNAL_FILE=~/notes/private/journal.md</code></pre>
       <details>
         <summary>Is my data locked into this tool?</summary>
         <p>No. The file is plain markdown. If you ever stop using journal, your entries are just a text file you can read anywhere.</p>
+      </details>
+      <details>
+        <summary>How does sync work?</summary>
+        <p>Run the server once (<code>uvicorn journal_server.app:app</code>) and point any client at it with <code>journal sync --base URL</code>. Entries flow in both directions and updates appear live on other devices over WebSocket. Local-first: your markdown file is always the source of truth.</p>
       </details>
       <details>
         <summary>Does it need an internet connection?</summary>

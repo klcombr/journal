@@ -11,76 +11,147 @@
   <style>
     :root {
       --black: #000; --white: #fff; --paper: #f4f4f0; --gray: #9c9c94; --gray-dark: #3a3a38;
+      --red: #b03028;
       --border: 3px solid var(--black); --shadow: 10px 10px 0 var(--black); --shadow-sm: 5px 5px 0 var(--black);
       --radius: 14px;
       --mono: "JetBrains Mono", ui-monospace, monospace; --sans: "Space Grotesk", system-ui, sans-serif;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: var(--sans); background: var(--paper); color: var(--black); min-height: 100vh; }
+    body { font-family: var(--sans); background: var(--paper); color: var(--black); min-height: 100vh; display: flex; flex-direction: column; }
     button, input, textarea { font-family: inherit; }
     a { color: var(--black); }
+    a:hover { background: var(--black); color: var(--paper); }
+    :focus-visible { outline: 3px solid var(--black); outline-offset: 2px; border-radius: 6px; }
 
-    .wrap { max-width: 760px; margin: 0 auto; padding: 24px; }
+    .wrap { width: 100%; max-width: 720px; margin: 0 auto; padding: 16px 20px; }
 
-    header { border-bottom: var(--border); background: var(--white); }
+    header { border-bottom: var(--border); background: var(--white); position: sticky; top: 0; z-index: 20; }
     .head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-    h1 { font-size: 1.6rem; text-transform: uppercase; letter-spacing: -0.02em; display: flex; align-items: center; gap: 10px; }
-    .dot { width: 14px; height: 14px; border: 2px solid var(--black); background: var(--gray); display: inline-block; }
+    h1 { font-size: 1.4rem; text-transform: uppercase; letter-spacing: -0.02em; display: flex; align-items: center; gap: 10px; }
+    h1 a { text-decoration: none; }
+    .dot { width: 14px; height: 14px; border: 2px solid var(--black); background: var(--gray); display: inline-block; flex: none; }
     .dot.live { background: #0f0; }
 
     .btn {
       border: 2px solid var(--black); background: var(--white); color: var(--black);
       padding: 8px 14px; font-family: var(--mono); font-size: 0.8rem; text-transform: uppercase;
       cursor: pointer; box-shadow: var(--shadow-sm); border-radius: 8px;
+      transition: transform 0.06s ease, box-shadow 0.06s ease;
     }
-    .btn:active { transform: translate(2px,2px); box-shadow: none; }
+    .btn:hover { transform: translate(2px, 2px); box-shadow: none; }
+    .btn:active { transform: translate(3px, 3px); }
     .btn.solid { background: var(--black); color: var(--white); }
+    .btn.danger { border-color: var(--red); color: var(--red); }
+    .btn.danger.solid { background: var(--red); color: var(--white); }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: var(--shadow-sm); }
 
-    .auth-box { border: var(--border); background: var(--white); box-shadow: var(--shadow); border-radius: var(--radius); padding: 22px; margin-top: 40px; }
-    .auth-box h2 { text-transform: uppercase; font-size: 1.1rem; margin-bottom: 14px; }
-    .field { margin-bottom: 12px; }
-    .field label { display: block; font-family: var(--mono); font-size: 0.7rem; text-transform: uppercase; margin-bottom: 4px; }
-    .field input { width: 100%; border: 2px solid var(--black); border-radius: 8px; padding: 10px 12px; font-size: 1rem; background: var(--paper); }
+    /* ---------- auth ---------- */
+    .auth-box { border: var(--border); background: var(--white); box-shadow: var(--shadow); border-radius: var(--radius); padding: 26px 24px; margin: 44px 0; }
+    .auth-box h2 { text-transform: uppercase; font-size: 1.1rem; margin-bottom: 4px; }
+    .auth-hint { font-family: var(--mono); font-size: 0.72rem; color: var(--gray-dark); margin-bottom: 16px; }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-family: var(--mono); font-size: 0.7rem; text-transform: uppercase; margin-bottom: 5px; font-weight: 700; }
+    .field input { width: 100%; border: 2px solid var(--black); border-radius: 8px; padding: 11px 12px; font-size: 1rem; background: var(--paper); }
     .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-    .msg { font-family: var(--mono); font-size: 0.8rem; margin-top: 10px; min-height: 1.2em; }
-    .err { color: #c0392b; }
+    .msg { font-family: var(--mono); font-size: 0.8rem; margin-top: 12px; min-height: 1.2em; }
+    .err { color: var(--red); }
     .ok { color: #1e7d3a; }
 
+    /* ---------- app ---------- */
     .app-view { display: none; }
     .sidebar {
       display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
       border: 2px solid var(--black); background: var(--white); border-radius: var(--radius);
-      padding: 10px 12px; margin: 18px 0; box-shadow: var(--shadow-sm);
+      padding: 10px 12px; margin: 20px 0 14px; box-shadow: var(--shadow-sm);
     }
-    .sidebar .who { font-family: var(--mono); font-size: 0.8rem; font-weight: 700; margin-right: auto; }
-
-    .composer { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-    .composer textarea {
-      flex: 1; min-width: 220px; border: 2px solid var(--black); border-radius: 10px;
-      padding: 12px; font-size: 1rem; resize: vertical; min-height: 44px; background: var(--white);
-    }
-
-    .entry {
-      border: var(--border); background: var(--white); border-radius: var(--radius);
-      padding: 16px 18px; margin-bottom: 16px; box-shadow: var(--shadow-sm);
-    }
-    .entry .time { font-family: var(--mono); font-size: 0.7rem; color: var(--gray-dark); text-transform: uppercase; margin-bottom: 6px; }
-    .entry .body { font-size: 1.05rem; margin-bottom: 10px; white-space: pre-wrap; }
-    .entry .meta { font-family: var(--mono); font-size: 0.72rem; color: var(--gray-dark); }
-    .entry .act { display: flex; gap: 8px; justify-content: flex-end; }
-    .entry .act .btn { padding: 4px 10px; box-shadow: 3px 3px 0 var(--black); font-size: 0.7rem; }
-
-    .status { font-family: var(--mono); font-size: 0.75rem; margin-bottom: 14px; }
+    .sidebar .who { font-family: var(--mono); font-size: 0.8rem; font-weight: 700; margin-right: auto; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .status { font-family: var(--mono); font-size: 0.75rem; margin-bottom: 12px; }
     .status b { text-transform: uppercase; }
-    .counts { font-family: var(--mono); font-size: 0.8rem; border: 2px solid var(--black); background: var(--white); border-radius: 10px; padding: 10px 14px; box-shadow: var(--shadow-sm); margin-bottom: 20px; display: inline-block; }
+    .status .ok { color: #1e7d3a; }
+    .status .warn { color: #9a6b00; }
+
+    .counts {
+      font-family: var(--mono); font-size: 0.8rem; border: 2px solid var(--black); background: var(--white);
+      border-radius: 10px; padding: 8px 14px; box-shadow: var(--shadow-sm); margin-bottom: 20px; display: inline-flex; gap: 14px;
+    }
+    .counts b { border-right: 2px solid var(--black); padding-right: 14px; }
+
+    .composer {
+      display: flex; gap: 10px; margin-bottom: 8px;
+      border: var(--border); background: var(--white); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 14px; align-items: flex-end;
+    }
+    .composer textarea {
+      flex: 1; min-width: 200px; border: 2px solid var(--black); border-radius: 10px;
+      padding: 12px; font-size: 1.05rem; resize: vertical; min-height: 62px; background: var(--paper);
+      transition: box-shadow 0.1s ease;
+    }
+    .composer textarea:focus { outline: none; box-shadow: 4px 4px 0 var(--black); }
+    .composer .side { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+    .composer .side .btn { white-space: nowrap; }
+    .charcount { font-family: var(--mono); font-size: 0.7rem; color: var(--gray-dark); text-align: right; margin: 4px 2px 18px; }
+    .charcount.over { color: var(--red); font-weight: 700; }
+
+    .empty {
+      border: 2px dashed var(--gray); border-radius: var(--radius); text-align: center;
+      padding: 48px 20px; color: var(--gray-dark); font-family: var(--mono); font-size: 0.9rem;
+    }
+
+    .day-group { margin-bottom: 26px; }
+    .day-head {
+      font-family: var(--mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
+      border-bottom: 2px solid var(--black); padding-bottom: 6px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: baseline;
+    }
+    .day-head .n { color: var(--gray-dark); font-weight: 400; }
+
+    .entry { border: var(--border); background: var(--white); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 14px; box-shadow: var(--shadow-sm); }
+    .entry .time { font-family: var(--mono); font-size: 0.7rem; color: var(--gray-dark); text-transform: uppercase; margin-bottom: 6px; }
+    .entry .body { font-size: 1.05rem; margin-bottom: 10px; white-space: pre-wrap; line-height: 1.5; }
+    .entry .act { display: flex; gap: 8px; justify-content: flex-end; align-items: center; }
+    .entry .act .btn { padding: 4px 10px; box-shadow: 3px 3px 0 var(--black); font-size: 0.7rem; }
+    .entry .act .confirm { font-family: var(--mono); font-size: 0.72rem; color: var(--gray-dark); }
+    .entry.editing { border-color: var(--black); box-shadow: var(--shadow); }
+    .entry.editing .body { display: none; }
+    .entry.editing .edit-area { display: block; }
+    .edit-area { display: none; }
+    .edit-area textarea { width: 100%; border: 2px solid var(--black); border-radius: 10px; padding: 10px; font-size: 1.05rem; min-height: 80px; background: var(--paper); margin-bottom: 10px; resize: vertical; }
+    .edit-area .row { justify-content: flex-end; }
+
+    .toast {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: var(--black); color: var(--white); font-family: var(--mono); font-size: 0.8rem;
+      padding: 12px 20px; border-radius: 10px; opacity: 0; pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease; z-index: 50; max-width: 90vw; text-align: center;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.err { background: var(--red); }
+
+    .modal-back {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; align-items: center; justify-content: center; z-index: 60; padding: 20px;
+    }
+    .modal-back.open { display: flex; }
+    .modal {
+      background: var(--white); border: var(--border); box-shadow: var(--shadow); border-radius: var(--radius);
+      padding: 24px; width: 100%; max-width: 420px;
+    }
+    .modal h2 { text-transform: uppercase; font-size: 1rem; margin-bottom: 4px; }
+    .modal .field { margin-top: 14px; }
+
     .hidden { display: none !important; }
+    .footer { margin-top: auto; border-top: 2px solid var(--black); padding: 18px 0 24px; text-align: center; font-family: var(--mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gray-dark); }
+
+    @media (max-width: 520px) {
+      .composer { flex-direction: column; align-items: stretch; }
+      .composer .side { flex-direction: row; justify-content: flex-end; }
+      .counts { flex-wrap: wrap; }
+    }
   </style>
 </head>
 <body>
   <header>
     <div class="wrap head">
-      <h1><span class="dot" id="live-dot"></span> journal/</h1>
-      <a class="btn" href="/">back to landing</a>
+      <h1><a href="../../"><span class="dot" id="live-dot"></span> journal/</a></h1>
+      <a class="btn" href="../../">← landing</a>
     </div>
   </header>
 
@@ -88,16 +159,17 @@
     <!-- Auth -->
     <section class="auth-box" id="auth-box">
       <h2>login or register</h2>
+      <p class="auth-hint">one account · all your devices</p>
       <div class="field">
-        <label>server</label>
+        <label for="server">server</label>
         <input id="server" value="http://127.0.0.1:8000" />
       </div>
       <div class="field">
-        <label>username</label>
+        <label for="username">username</label>
         <input id="username" autocomplete="username" />
       </div>
       <div class="field">
-        <label>password</label>
+        <label for="password">password</label>
         <input id="password" type="password" autocomplete="current-password" />
       </div>
       <div class="row">
@@ -111,30 +183,64 @@
     <section class="app-view" id="app-view">
       <div class="sidebar">
         <span class="who" id="who"></span>
+        <button class="btn" id="btn-cfg" title="change sync server">server</button>
         <button class="btn" id="btn-logout">logout</button>
-        <button class="btn" id="btn-cfg">server…</button>
       </div>
       <p class="status" id="conn-status"><b>connecting…</b></p>
+
       <span class="counts" id="counts"></span>
 
       <div class="composer">
-        <textarea id="new-entry" placeholder="what did you learn today?"></textarea>
-        <button class="btn solid" id="btn-add">add</button>
+        <textarea id="new-entry" placeholder="what did you learn today? (enter to save)" maxlength="2000"></textarea>
+        <div class="side">
+          <button class="btn solid" id="btn-add">add</button>
+        </div>
       </div>
+      <p class="charcount" id="charcount"></p>
+
       <div id="entries"></div>
     </section>
   </div>
+
+  <div class="modal-back" id="cfg-modal">
+    <div class="modal">
+      <h2>sync server</h2>
+      <div class="field">
+        <label for="cfg-server">server url</label>
+        <input id="cfg-server" />
+      </div>
+      <div class="row" style="margin-top:16px;justify-content:flex-end;">
+        <button class="btn" id="cfg-cancel">cancel</button>
+        <button class="btn solid" id="cfg-save">save</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <footer class="footer">journal · plain markdown · synced in real time</footer>
 
   <script>
     "use strict";
     var API = localStorage.getItem("journal-server") || "http://127.0.0.1:8000";
     var TOKEN = localStorage.getItem("journal-token") || null;
-    var ws = null;
+    var USER = localStorage.getItem("journal-user") || null;
+    var ws = null, wsRetry = 0;
     var entries = [];
+    var editingId = null;
+    var confirmId = null;
 
     var $ = function (id) { return document.getElementById(id); };
 
     document.getElementById("server").value = API;
+
+    function toast(text, isErr) {
+      var t = $("toast");
+      t.textContent = text;
+      t.className = "toast show" + (isErr ? " err" : "");
+      clearTimeout(t._h);
+      t._h = setTimeout(function () { t.className = "toast"; }, 2600);
+    }
 
     function api(path, opts) {
       opts = opts || {};
@@ -158,6 +264,11 @@
       m.className = "msg " + (isErr ? "err" : "ok");
     }
 
+    function setBusy(btn, busy, text) {
+      if (busy) { btn._t = btn.textContent; btn.disabled = true; btn.textContent = text || "…"; }
+      else { btn.disabled = false; if (btn._t) btn.textContent = btn._t; }
+    }
+
     function auth(register) {
       var u = $("username").value.trim();
       var p = $("password").value;
@@ -165,50 +276,86 @@
       if (!u || p.length < 8) { setMsg("username + password of 8+ chars required", true); return; }
       API = server;
       localStorage.setItem("journal-server", API);
+      var btn = register ? $("btn-register") : $("btn-login");
+      setBusy(btn, true, register ? "registering…" : "logging in…");
       api(register ? "/api/auth/register" : "/api/auth/login", { method: "POST", body: JSON.stringify({ username: u, password: p }) })
         .then(function (d) {
-          TOKEN = d.token;
+          TOKEN = d.token; USER = u;
           localStorage.setItem("journal-token", TOKEN);
+          localStorage.setItem("journal-user", USER);
+          $("who").textContent = USER;
           showApp(); connect(); loadEntries();
+          toast("welcome, " + u + "!");
         })
-        .catch(function (e) { setMsg(e.message, true); });
+        .catch(function (e) { setMsg(e.message, true); })
+        .finally(function () { setBusy(btn, false); });
     }
 
     $("btn-login").onclick = function () { auth(false); };
     $("btn-register").onclick = function () { auth(true); };
 
     $("btn-logout").onclick = function () {
-      TOKEN = null; localStorage.removeItem("journal-token");
-      if (ws) ws.close(); ws = null;
+      TOKEN = null; USER = null;
+      localStorage.removeItem("journal-token");
+      localStorage.removeItem("journal-user");
+      if (ws) { ws.onclose = null; ws.close(); }
+      ws = null; wsRetry = 0; entries = [];
       showAuth();
     };
 
+    // server config modal
     $("btn-cfg").onclick = function () {
-      var s = prompt("API server", API);
-      if (s) { API = s.replace(/\/+$/, ""); localStorage.setItem("journal-server", API); }
+      $("cfg-server").value = API;
+      $("cfg-modal").classList.add("open");
+      $("cfg-server").focus();
+    };
+    $("cfg-cancel").onclick = function () { $("cfg-modal").classList.remove("open"); };
+    $("cfg-save").onclick = function () {
+      var s = $("cfg-server").value.trim().replace(/\/+$/, "");
+      if (!s) return;
+      API = s;
+      localStorage.setItem("journal-server", API);
+      $("cfg-modal").classList.remove("open");
+      if (ws) { ws.onclose = null; ws.close(); }
+      ws = null; wsRetry = 0;
+      connect();
+      loadEntries();
+      toast("server changed to " + API);
     };
 
     function connect() {
       if (!TOKEN) return;
       var proto = API.startsWith("https") ? "wss" : "ws";
-      try {
-        ws = new WebSocket(proto + "://" + API.replace(/^https?:\/\//, "") + "/ws");
-      } catch (e) { setStatus("offline"); return; }
+      var host = API.replace(/^https?:\/\//, "");
+      try { ws = new WebSocket(proto + "://" + host + "/ws"); }
+      catch (e) { setStatus("offline", "warn"); scheduleReconnect(); return; }
       ws.onopen = function () { ws.send(JSON.stringify({ token: TOKEN })); };
       ws.onmessage = function (ev) {
         var msg = JSON.parse(ev.data);
-        if (msg.type === "auth_ok") { setStatus("connected"); live(true); }
+        if (msg.type === "auth_ok") { wsRetry = 0; setStatus("connected", "ok"); live(true); }
         else if (msg.type === "snapshot") { entries = msg.entries.filter(function (e) { return !e.deleted; }); render(); }
         else if (msg.type === "entry") { upsertLocal(msg.entry); render(); }
-        else if (msg.type === "error") { setStatus("auth failed"); live(false); }
+        else if (msg.type === "error") { setStatus("auth failed", "warn"); live(false); }
       };
-      ws.onclose = function () { setStatus("disconnected"); live(false); };
-      ws.onerror = function () { setStatus("error"); live(false); };
+      ws.onclose = function () { setStatus("disconnected", "warn"); live(false); scheduleReconnect(); };
+      ws.onerror = function () { setStatus("offline", "warn"); live(false); };
+    }
+
+    function scheduleReconnect() {
+      if (!TOKEN) return;
+      var delay = Math.min(30000, 1500 * Math.pow(2, wsRetry));
+      wsRetry++;
+      clearTimeout(connect._t);
+      connect._t = setTimeout(function () {
+        if (TOKEN && (!ws || ws.readyState === 3)) connect();
+      }, delay);
     }
 
     function live(on) { $("live-dot").classList.toggle("live", !!on); }
 
-    function setStatus(t) { $("conn-status").innerHTML = "<b>" + t + "</b> · " + API; }
+    function setStatus(t, cls) {
+      $("conn-status").innerHTML = "<b class=\"" + (cls || "") + "\">" + t + "</b> · " + API.replace(/^https?:\/\//, "");
+    }
 
     function upsertLocal(e) {
       var i = entries.findIndex(function (x) { return x.id === e.id; });
@@ -222,11 +369,17 @@
         entries = list.filter(function (e) { return !e.deleted; });
         entries.sort(function (a, b) { return a.created_at < b.created_at ? 1 : -1; });
         render();
-      }).catch(function (e) { setStatus("error loading: " + e.message); });
+      }).catch(function (e) { setStatus("load failed", "warn"); toast("could not load entries: " + e.message, true); });
     }
 
-    function fmt(t) {
-      try { return new Date(t).toISOString().replace("T", " ").slice(0, 19) + "Z"; } catch (e) { return t; }
+    function fmtTime(t) {
+      try { return new Date(t).toISOString().slice(11, 19) + " UTC"; } catch (e) { return t; }
+    }
+    function fmtDay(t) {
+      try {
+        var d = new Date(t);
+        return d.toUTCString().slice(0, 16).replace(",", "");
+      } catch (e) { return t.slice(0, 10); }
     }
 
     function render() {
@@ -234,47 +387,182 @@
       box.innerHTML = "";
       var days = {};
       entries.forEach(function (e) { days[e.created_at.slice(0, 10)] = true; });
-      $("counts").textContent = entries.length + " entries · " + Object.keys(days).length + " days";
+      $("counts").innerHTML = "<b>" + entries.length + " entries</b> " + Object.keys(days).length + " days";
+
       if (!entries.length) {
-        box.innerHTML = '<p style="font-family:var(--mono);color:var(--gray-dark)">no entries yet — write the first one above.</p>';
+        box.innerHTML = '<div class="empty">no entries yet.<br/><br/>write the first one above —<br/>it will appear here and on every device.</div>';
         return;
       }
+
+      var groups = {};
       entries.forEach(function (e) {
-        var el = document.createElement("article");
-        el.className = "entry";
-        var body = document.createElement("div");
-        body.className = "body";
-        body.textContent = e.body;
-        var time = document.createElement("div");
-        time.className = "time";
-        time.textContent = fmt(e.created_at);
-        var act = document.createElement("div");
-        act.className = "act";
-        var del = document.createElement("button");
-        del.className = "btn"; del.textContent = "delete";
-        del.onclick = function () { api("/api/entries/" + e.id, { method: "DELETE" }).then(function () { upsertLocal({ id: e.id, deleted: true }); render(); }).catch(function (err) { alert(err.message); }); };
-        act.appendChild(del);
-        el.appendChild(time); el.appendChild(body); el.appendChild(act);
-        box.appendChild(el);
+        var d = e.created_at.slice(0, 10);
+        (groups[d] = groups[d] || []).push(e);
+      });
+
+      var dayLabels = {
+        get: function (d) {
+          try {
+            var x = new Date(d + "T00:00:00Z");
+            var today = new Date(); today.setHours(0, 0, 0, 0);
+            var yest = new Date(today.getTime() - 86400000);
+            if (x.getTime() === today.getTime()) return "today";
+            if (x.getTime() === yest.getTime()) return "yesterday";
+            return fmtDay(d);
+          } catch (e) { return d; }
+        }
+      };
+
+      Object.keys(groups).sort().reverse().forEach(function (d) {
+        var grp = document.createElement("section");
+        grp.className = "day-group";
+        var head = document.createElement("div");
+        head.className = "day-head";
+        var label = document.createElement("span");
+        label.textContent = dayLabels.get(d);
+        var n = document.createElement("span");
+        n.className = "n";
+        n.textContent = groups[d].length + " entry" + (groups[d].length === 1 ? "" : "s");
+        head.appendChild(label); head.appendChild(n);
+        grp.appendChild(head);
+        groups[d].forEach(function (e) { grp.appendChild(entryEl(e)); });
+        box.appendChild(grp);
       });
     }
 
+    function entryEl(e) {
+      var el = document.createElement("article");
+      el.className = "entry";
+      el.id = "e-" + e.id;
+
+      var time = document.createElement("div");
+      time.className = "time";
+      time.textContent = fmtTime(e.created_at);
+
+      var body = document.createElement("div");
+      body.className = "body";
+      body.textContent = e.body;
+
+      // edit area
+      var edit = document.createElement("div");
+      edit.className = "edit-area";
+      var ta = document.createElement("textarea");
+      ta.value = e.body; ta.maxLength = 2000;
+      var erow = document.createElement("div");
+      erow.className = "row";
+      var ecancel = document.createElement("button");
+      ecancel.className = "btn"; ecancel.textContent = "cancel";
+      var esave = document.createElement("button");
+      esave.className = "btn solid"; esave.textContent = "save";
+      erow.appendChild(ecancel); erow.appendChild(esave);
+      edit.appendChild(ta); edit.appendChild(erow);
+
+      var act = document.createElement("div");
+      act.className = "act";
+      var editBtn = document.createElement("button");
+      editBtn.className = "btn"; editBtn.textContent = "edit";
+      var delBtn = document.createElement("button");
+      delBtn.className = "btn danger"; delBtn.textContent = "delete";
+      act.appendChild(editBtn); act.appendChild(delBtn);
+
+      el.appendChild(time); el.appendChild(body); el.appendChild(edit); el.appendChild(act);
+
+      // actions
+      function closeEdit() {
+        el.classList.remove("editing");
+        editBtn.textContent = "edit";
+        editBtn.disabled = false;
+        if (el.id === "e-" + editingId) editingId = null;
+      }
+      editBtn.onclick = function () {
+        if (el.classList.contains("editing")) { closeEdit(); return; }
+        if (editingId && editingId !== e.id) {
+          var other = document.getElementById("e-" + editingId);
+          if (other) { other.classList.remove("editing"); var b = other.querySelector(".btn"); if (b) b.textContent = "edit"; }
+        }
+        editingId = e.id;
+        el.classList.add("editing");
+        editBtn.textContent = "cancel";
+        ta.focus();
+      };
+      ecancel.onclick = closeEdit;
+      esave.onclick = function () {
+        var t = ta.value.trim();
+        if (!t) { closeEdit(); return; }
+        setBusy(esave, true, "saving…");
+        var payload = { body: t, updated_at: new Date().toISOString() };
+        api("/api/entries/" + e.id, { method: "PUT", body: JSON.stringify(payload) })
+          .then(function (upd) {
+            upsertLocal(upd); closeEdit(); render();
+            toast("entry updated");
+          })
+          .catch(function (err) { toast("save failed: " + err.message, true); })
+          .finally(function () { setBusy(esave, false); });
+      };
+      ta.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter" && !ev.shiftKey) { ev.preventDefault(); esave.click(); }
+      });
+
+      delBtn.onclick = function () {
+        if (confirmId === e.id) {
+          setBusy(delBtn, true, "…");
+          api("/api/entries/" + e.id, { method: "DELETE" })
+            .then(function () {
+              confirmId = null; upsertLocal({ id: e.id, deleted: true }); render();
+              toast("entry deleted");
+            })
+            .catch(function (err) { toast("delete failed: " + err.message, true); setBusy(delBtn, false); });
+          return;
+        }
+        confirmId = e.id;
+        var was = delBtn.textContent;
+        delBtn.textContent = "sure?";
+        delBtn.classList.add("solid");
+        setTimeout(function () {
+          if (confirmId === e.id) {
+            confirmId = null;
+            delBtn.textContent = was;
+            delBtn.classList.remove("solid");
+          }
+        }, 2500);
+      };
+      return el;
+    }
+
+    // composer
+    $("new-entry").addEventListener("input", function () {
+      var n = $("new-entry").value.length;
+      var c = $("charcount");
+      c.textContent = n ? n + " / 2000" : "";
+      c.classList.toggle("over", n > 2000);
+    });
+
     $("btn-add").onclick = function () {
       var t = $("new-entry").value.trim();
-      if (!t) return;
+      if (!t) { toast("write something first", true); $("new-entry").focus(); return; }
       var now = new Date().toISOString();
       var id = crypto.randomUUID ? crypto.randomUUID() : "id-" + Date.now();
       var payload = { id: id, body: t, created_at: now, updated_at: now, deleted: false };
+      var btn = $("btn-add");
+      setBusy(btn, true, "saving…");
       api("/api/entries", { method: "POST", body: JSON.stringify(payload) })
-        .then(function () { upsertLocal(payload); render(); $("new-entry").value = ""; })
-        .catch(function (e) { alert("sync failed: " + e.message); upsertLocal(payload); render(); });
+        .then(function () {
+          upsertLocal(payload); render();
+          $("new-entry").value = ""; $("charcount").textContent = "";
+        })
+        .catch(function (e) { toast("sync failed: " + e.message, true); upsertLocal(payload); render(); })
+        .finally(function () { setBusy(btn, false); });
     };
 
     $("new-entry").addEventListener("keydown", function (e) {
       if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("btn-add").click(); }
     });
 
-    if (TOKEN) { showApp(); connect(); loadEntries(); } else { showAuth(); }
+    $("password").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") $("btn-login").click();
+    });
+
+    if (TOKEN) { showApp(); $("who").textContent = USER || "you"; connect(); loadEntries(); } else { showAuth(); }
   </script>
 </body>
 </html>
