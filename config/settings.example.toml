@@ -1,0 +1,13 @@
+[journal]
+# Default file used when neither -f nor $JOURNAL_FILE is set.
+# Relative paths are resolved from the current directory.
+default_file = "journal.md"
+
+# How many entries `journal list` shows by default.
+list_default = 10
+
+[entry]
+# Timestamp format. "iso" is the only option today.
+timestamp = "iso"
+# Prefix used to mark an entry line in the markdown file.
+marker = "- "

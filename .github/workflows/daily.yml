@@ -33,7 +33,7 @@ jobs:
         run: |
           for i in $(seq 1 "$N"); do
             LINE="- $(date -u +%Y-%m-%dT%H:%M:%SZ) entry"
-            echo "$LINE" >> journal.md
+            echo "$LINE" >> tests/fixtures/journal-test.md
             git add .
             git commit -m "daily entry"
             git push
