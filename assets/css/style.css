@@ -7,8 +7,8 @@
   --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --sans: "Space Grotesk", "Inter", system-ui, -apple-system, sans-serif;
   --border: 3px solid var(--black);
-  --shadow: 12px 12px 0 var(--black);
-  --shadow-sm: 8px 8px 0 var(--black);
+  --shadow: 10px 10px 0 var(--black);
+  --shadow-sm: 6px 6px 0 var(--black);
   --radius: 18px;
 }
 
@@ -302,6 +302,26 @@ code {
   margin-bottom: 8px;
 }
 .card p { color: var(--gray-dark); font-size: 0.95rem; font-weight: 500; }
+
+/* ---------- Apps ---------- */
+.apps { padding: 90px 20px; border-top: var(--border); }
+.app-card { display: block; color: var(--black); text-decoration: none; }
+.app-card:hover { text-decoration: none; }
+.app-card .app-link {
+  display: inline-block;
+  margin-top: 16px;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: 2px solid var(--black);
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: var(--paper);
+  box-shadow: var(--shadow-sm);
+}
+.app-card:hover .app-link { background: var(--black); color: var(--paper); }
 
 /* ---------- Docs ---------- */
 .docs { padding: 90px 20px; border-top: var(--border); }

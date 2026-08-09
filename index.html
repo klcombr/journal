@@ -21,6 +21,7 @@
         <span>journal/</span>
       </a>
       <ul class="nav-links">
+        <li><a href="#apps">apps</a></li>
         <li><a href="#features">features</a></li>
         <li><a href="#terminal">terminal</a></li>
         <li><a href="#docs">docs</a></li>
@@ -92,11 +93,55 @@
     </div>
   </section>
 
+  <section class="apps" id="apps">
+    <div class="wrap">
+      <h2 class="section-title">Run it <span class="box">anywhere</span></h2>
+      <p class="section-sub">One journal. Every device. Synced in real time.</p>
+      <div class="grid">
+        <a class="card app-card" href="apps/web/">
+          <span class="card-icon">01 / web</span>
+          <h3>Web app</h3>
+          <p>Write in the browser, sync over WebSocket. No install — just open the link.</p>
+          <span class="app-link">open app →</span>
+        </a>
+        <a class="card app-card" href="apps/android/dist/journal-2.0.0.apk" download>
+          <span class="card-icon">02 / android</span>
+          <h3>Android</h3>
+          <p>Install the APK directly on your phone. Same account, same entries.</p>
+          <span class="app-link">download apk (3.2 mb) →</span>
+        </a>
+        <a class="card app-card" href="apps/gui/">
+          <span class="card-icon">03 / desktop</span>
+          <h3>Desktop GUI</h3>
+          <p>Tkinter app for Linux/Windows/macOS. Local-first with one-click sync.</p>
+          <span class="app-link">read more →</span>
+        </a>
+        <a class="card app-card" href="#terminal">
+          <span class="card-icon">04 / cli</span>
+          <h3>Terminal CLI</h3>
+          <p>The original. <code>journal add</code> your way, sync from the shell.</p>
+          <span class="app-link">see it →</span>
+        </a>
+        <a class="card app-card" href="apps/server/">
+          <span class="card-icon">05 / server</span>
+          <h3>Sync server</h3>
+          <p>FastAPI + SQLite + JWT + WebSocket. Self-host it, or point apps at a hosted instance.</p>
+          <span class="app-link">read more →</span>
+        </a>
+        <a class="card app-card" href="docs/specs/product.md">
+          <span class="card-icon">06 / specs</span>
+          <h3>Specs</h3>
+          <p>Product, API and sync protocol — fully documented so you can extend it.</p>
+          <span class="app-link">read the specs →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
   <section class="features" id="features">
     <div class="wrap">
       <h2 class="section-title">Why <span class="box">journal</span>?</h2>
-      <p class="section-sub">Everything a tiny journal should be. Nothing it shouldn't.</p>
-      <div class="grid">
+      <p class="section-sub">Everything a tiny journal should be. Nothing it shouldn't.</p>      <div class="grid">
         <article class="card">
           <span class="card-icon">01 / plain</span>
           <h3>Plain Markdown</h3>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>journal — web</title>
+  <meta name="description" content="journal web client — write entries and sync in real time." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='4' y='4' width='56' height='56' rx='12' fill='%23f4f4f0' stroke='%23000' stroke-width='4'/%3E%3Cline x1='16' y1='18' x2='48' y2='18' stroke='%23000' stroke-width='4'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black: #000; --white: #fff; --paper: #f4f4f0; --gray: #9c9c94; --gray-dark: #3a3a38;
+      --border: 3px solid var(--black); --shadow: 10px 10px 0 var(--black); --shadow-sm: 5px 5px 0 var(--black);
+      --radius: 14px;
+      --mono: "JetBrains Mono", ui-monospace, monospace; --sans: "Space Grotesk", system-ui, sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--sans); background: var(--paper); color: var(--black); min-height: 100vh; }
+    button, input, textarea { font-family: inherit; }
+    a { color: var(--black); }
+
+    .wrap { max-width: 760px; margin: 0 auto; padding: 24px; }
+
+    header { border-bottom: var(--border); background: var(--white); }
+    .head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    h1 { font-size: 1.6rem; text-transform: uppercase; letter-spacing: -0.02em; display: flex; align-items: center; gap: 10px; }
+    .dot { width: 14px; height: 14px; border: 2px solid var(--black); background: var(--gray); display: inline-block; }
+    .dot.live { background: #0f0; }
+
+    .btn {
+      border: 2px solid var(--black); background: var(--white); color: var(--black);
+      padding: 8px 14px; font-family: var(--mono); font-size: 0.8rem; text-transform: uppercase;
+      cursor: pointer; box-shadow: var(--shadow-sm); border-radius: 8px;
+    }
+    .btn:active { transform: translate(2px,2px); box-shadow: none; }
+    .btn.solid { background: var(--black); color: var(--white); }
+
+    .auth-box { border: var(--border); background: var(--white); box-shadow: var(--shadow); border-radius: var(--radius); padding: 22px; margin-top: 40px; }
+    .auth-box h2 { text-transform: uppercase; font-size: 1.1rem; margin-bottom: 14px; }
+    .field { margin-bottom: 12px; }
+    .field label { display: block; font-family: var(--mono); font-size: 0.7rem; text-transform: uppercase; margin-bottom: 4px; }
+    .field input { width: 100%; border: 2px solid var(--black); border-radius: 8px; padding: 10px 12px; font-size: 1rem; background: var(--paper); }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .msg { font-family: var(--mono); font-size: 0.8rem; margin-top: 10px; min-height: 1.2em; }
+    .err { color: #c0392b; }
+    .ok { color: #1e7d3a; }
+
+    .app-view { display: none; }
+    .sidebar {
+      display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+      border: 2px solid var(--black); background: var(--white); border-radius: var(--radius);
+      padding: 10px 12px; margin: 18px 0; box-shadow: var(--shadow-sm);
+    }
+    .sidebar .who { font-family: var(--mono); font-size: 0.8rem; font-weight: 700; margin-right: auto; }
+
+    .composer { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .composer textarea {
+      flex: 1; min-width: 220px; border: 2px solid var(--black); border-radius: 10px;
+      padding: 12px; font-size: 1rem; resize: vertical; min-height: 44px; background: var(--white);
+    }
+
+    .entry {
+      border: var(--border); background: var(--white); border-radius: var(--radius);
+      padding: 16px 18px; margin-bottom: 16px; box-shadow: var(--shadow-sm);
+    }
+    .entry .time { font-family: var(--mono); font-size: 0.7rem; color: var(--gray-dark); text-transform: uppercase; margin-bottom: 6px; }
+    .entry .body { font-size: 1.05rem; margin-bottom: 10px; white-space: pre-wrap; }
+    .entry .meta { font-family: var(--mono); font-size: 0.72rem; color: var(--gray-dark); }
+    .entry .act { display: flex; gap: 8px; justify-content: flex-end; }
+    .entry .act .btn { padding: 4px 10px; box-shadow: 3px 3px 0 var(--black); font-size: 0.7rem; }
+
+    .status { font-family: var(--mono); font-size: 0.75rem; margin-bottom: 14px; }
+    .status b { text-transform: uppercase; }
+    .counts { font-family: var(--mono); font-size: 0.8rem; border: 2px solid var(--black); background: var(--white); border-radius: 10px; padding: 10px 14px; box-shadow: var(--shadow-sm); margin-bottom: 20px; display: inline-block; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap head">
+      <h1><span class="dot" id="live-dot"></span> journal/</h1>
+      <a class="btn" href="/">back to landing</a>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <!-- Auth -->
+    <section class="auth-box" id="auth-box">
+      <h2>login or register</h2>
+      <div class="field">
+        <label>server</label>
+        <input id="server" value="http://127.0.0.1:8000" />
+      </div>
+      <div class="field">
+        <label>username</label>
+        <input id="username" autocomplete="username" />
+      </div>
+      <div class="field">
+        <label>password</label>
+        <input id="password" type="password" autocomplete="current-password" />
+      </div>
+      <div class="row">
+        <button class="btn solid" id="btn-login">login</button>
+        <button class="btn" id="btn-register">register</button>
+      </div>
+      <p class="msg" id="auth-msg"></p>
+    </section>
+
+    <!-- App -->
+    <section class="app-view" id="app-view">
+      <div class="sidebar">
+        <span class="who" id="who"></span>
+        <button class="btn" id="btn-logout">logout</button>
+        <button class="btn" id="btn-cfg">server…</button>
+      </div>
+      <p class="status" id="conn-status"><b>connecting…</b></p>
+      <span class="counts" id="counts"></span>
+
+      <div class="composer">
+        <textarea id="new-entry" placeholder="what did you learn today?"></textarea>
+        <button class="btn solid" id="btn-add">add</button>
+      </div>
+      <div id="entries"></div>
+    </section>
+  </div>
+
+  <script>
+    "use strict";
+    var API = localStorage.getItem("journal-server") || "http://127.0.0.1:8000";
+    var TOKEN = localStorage.getItem("journal-token") || null;
+    var ws = null;
+    var entries = [];
+
+    var $ = function (id) { return document.getElementById(id); };
+
+    document.getElementById("server").value = API;
+
+    function api(path, opts) {
+      opts = opts || {};
+      opts.headers = opts.headers || {};
+      opts.headers["Content-Type"] = "application/json";
+      if (TOKEN) opts.headers["Authorization"] = "Bearer " + TOKEN;
+      return fetch(API + path, opts).then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (b) {
+          if (!r.ok) { var e = new Error(b.detail || "HTTP " + r.status); e.status = r.status; throw e; }
+          return b;
+        });
+      });
+    }
+
+    function showAuth() { $("auth-box").classList.remove("hidden"); $("app-view").classList.add("hidden"); }
+    function showApp() { $("auth-box").classList.add("hidden"); $("app-view").classList.remove("hidden"); }
+
+    function setMsg(text, isErr) {
+      var m = $("auth-msg");
+      m.textContent = text;
+      m.className = "msg " + (isErr ? "err" : "ok");
+    }
+
+    function auth(register) {
+      var u = $("username").value.trim();
+      var p = $("password").value;
+      var server = $("server").value.trim().replace(/\/+$/, "");
+      if (!u || p.length < 8) { setMsg("username + password of 8+ chars required", true); return; }
+      API = server;
+      localStorage.setItem("journal-server", API);
+      api(register ? "/api/auth/register" : "/api/auth/login", { method: "POST", body: JSON.stringify({ username: u, password: p }) })
+        .then(function (d) {
+          TOKEN = d.token;
+          localStorage.setItem("journal-token", TOKEN);
+          showApp(); connect(); loadEntries();
+        })
+        .catch(function (e) { setMsg(e.message, true); });
+    }
+
+    $("btn-login").onclick = function () { auth(false); };
+    $("btn-register").onclick = function () { auth(true); };
+
+    $("btn-logout").onclick = function () {
+      TOKEN = null; localStorage.removeItem("journal-token");
+      if (ws) ws.close(); ws = null;
+      showAuth();
+    };
+
+    $("btn-cfg").onclick = function () {
+      var s = prompt("API server", API);
+      if (s) { API = s.replace(/\/+$/, ""); localStorage.setItem("journal-server", API); }
+    };
+
+    function connect() {
+      if (!TOKEN) return;
+      var proto = API.startsWith("https") ? "wss" : "ws";
+      try {
+        ws = new WebSocket(proto + "://" + API.replace(/^https?:\/\//, "") + "/ws");
+      } catch (e) { setStatus("offline"); return; }
+      ws.onopen = function () { ws.send(JSON.stringify({ token: TOKEN })); };
+      ws.onmessage = function (ev) {
+        var msg = JSON.parse(ev.data);
+        if (msg.type === "auth_ok") { setStatus("connected"); live(true); }
+        else if (msg.type === "snapshot") { entries = msg.entries.filter(function (e) { return !e.deleted; }); render(); }
+        else if (msg.type === "entry") { upsertLocal(msg.entry); render(); }
+        else if (msg.type === "error") { setStatus("auth failed"); live(false); }
+      };
+      ws.onclose = function () { setStatus("disconnected"); live(false); };
+      ws.onerror = function () { setStatus("error"); live(false); };
+    }
+
+    function live(on) { $("live-dot").classList.toggle("live", !!on); }
+
+    function setStatus(t) { $("conn-status").innerHTML = "<b>" + t + "</b> · " + API; }
+
+    function upsertLocal(e) {
+      var i = entries.findIndex(function (x) { return x.id === e.id; });
+      if (e.deleted) { if (i >= 0) entries.splice(i, 1); return; }
+      if (i >= 0) entries[i] = e; else entries.push(e);
+      entries.sort(function (a, b) { return a.created_at < b.created_at ? 1 : -1; });
+    }
+
+    function loadEntries() {
+      api("/api/entries").then(function (list) {
+        entries = list.filter(function (e) { return !e.deleted; });
+        entries.sort(function (a, b) { return a.created_at < b.created_at ? 1 : -1; });
+        render();
+      }).catch(function (e) { setStatus("error loading: " + e.message); });
+    }
+
+    function fmt(t) {
+      try { return new Date(t).toISOString().replace("T", " ").slice(0, 19) + "Z"; } catch (e) { return t; }
+    }
+
+    function render() {
+      var box = $("entries");
+      box.innerHTML = "";
+      var days = {};
+      entries.forEach(function (e) { days[e.created_at.slice(0, 10)] = true; });
+      $("counts").textContent = entries.length + " entries · " + Object.keys(days).length + " days";
+      if (!entries.length) {
+        box.innerHTML = '<p style="font-family:var(--mono);color:var(--gray-dark)">no entries yet — write the first one above.</p>';
+        return;
+      }
+      entries.forEach(function (e) {
+        var el = document.createElement("article");
+        el.className = "entry";
+        var body = document.createElement("div");
+        body.className = "body";
+        body.textContent = e.body;
+        var time = document.createElement("div");
+        time.className = "time";
+        time.textContent = fmt(e.created_at);
+        var act = document.createElement("div");
+        act.className = "act";
+        var del = document.createElement("button");
+        del.className = "btn"; del.textContent = "delete";
+        del.onclick = function () { api("/api/entries/" + e.id, { method: "DELETE" }).then(function () { upsertLocal({ id: e.id, deleted: true }); render(); }).catch(function (err) { alert(err.message); }); };
+        act.appendChild(del);
+        el.appendChild(time); el.appendChild(body); el.appendChild(act);
+        box.appendChild(el);
+      });
+    }
+
+    $("btn-add").onclick = function () {
+      var t = $("new-entry").value.trim();
+      if (!t) return;
+      var now = new Date().toISOString();
+      var id = crypto.randomUUID ? crypto.randomUUID() : "id-" + Date.now();
+      var payload = { id: id, body: t, created_at: now, updated_at: now, deleted: false };
+      api("/api/entries", { method: "POST", body: JSON.stringify(payload) })
+        .then(function () { upsertLocal(payload); render(); $("new-entry").value = ""; })
+        .catch(function (e) { alert("sync failed: " + e.message); upsertLocal(payload); render(); });
+    };
+
+    $("new-entry").addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("btn-add").click(); }
+    });
+
+    if (TOKEN) { showApp(); connect(); loadEntries(); } else { showAuth(); }
+  </script>
+</body>
+</html>
