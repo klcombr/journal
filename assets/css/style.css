@@ -7,8 +7,8 @@
   --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --sans: "Space Grotesk", "Inter", system-ui, -apple-system, sans-serif;
   --border: 3px solid var(--black);
-  --shadow: 20px 20px 0 var(--black);
-  --shadow-sm: 10px 10px 0 var(--black);
+  --shadow: 12px 12px 0 var(--black);
+  --shadow-sm: 8px 8px 0 var(--black);
   --radius: 18px;
 }
 
