@@ -8,7 +8,7 @@
   <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
@@ -17,36 +17,31 @@
   <nav class="nav" id="nav">
     <div class="nav-inner">
       <a class="brand" href="#">
-        <img src="assets/img/logo.svg" alt="" width="26" height="26" />
-        <span>journal</span>
+        <img src="assets/img/logo.svg" alt="" width="30" height="30" />
+        <span>journal/</span>
       </a>
       <ul class="nav-links">
-        <li><a href="#features">Features</a></li>
-        <li><a href="#terminal">Terminal</a></li>
-        <li><a href="#docs">Docs</a></li>
-        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#features">features</a></li>
+        <li><a href="#terminal">terminal</a></li>
+        <li><a href="#docs">docs</a></li>
+        <li><a href="#faq">faq</a></li>
       </ul>
-      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">◐</button>
       <button id="menu-toggle" class="menu-toggle" aria-label="Menu">☰</button>
     </div>
   </nav>
 
   <header class="hero" id="main">
-    <div class="hero-glow" aria-hidden="true"></div>
-    <div class="hero-inner">
-      <p class="hero-badge">v0.1.0 · MIT · <a href="https://github.com/klcombr/journal" target="_blank" rel="noopener">github.com/klcombr/journal</a></p>
-      <h1 class="hero-title">Write today.<br /><span class="grad">Remember tomorrow.</span></h1>
-      <p class="hero-sub">
-        <strong>journal</strong> is a tiny personal journal CLI. Write short entries to a
-        markdown file and keep track of how many days you have logged — without leaving
-        your terminal.
-      </p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="#terminal">Try it live</a>
-        <a class="btn btn-ghost" href="#docs">Read the docs</a>
-      </div>
+    <p class="hero-badge">v0.1.0 · MIT · <a href="https://github.com/klcombr/journal" target="_blank" rel="noopener">github.com/klcombr/journal</a></p>
+    <h1 class="hero-title">Write today.<br /><span class="rev">Remember</span> tomorrow.</h1>
+    <p class="hero-sub">
+      <strong>journal</strong> is a tiny personal journal CLI. Write short entries to a
+      markdown file and keep track of how many days you have logged — without leaving
+      your terminal.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#terminal">Try it live</a>
+      <a class="btn btn-ghost" href="#docs">Read the docs</a>
     </div>
-    <canvas id="stars" aria-hidden="true"></canvas>
   </header>
 
   <section class="stats" id="stats">
@@ -74,9 +69,9 @@
     <div class="wrap">
       <div class="terminal">
         <div class="terminal-bar">
-          <span class="dot dot-r"></span>
-          <span class="dot dot-y"></span>
-          <span class="dot dot-g"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
           <span class="terminal-title">zsh — journal</span>
         </div>
         <div class="terminal-body" id="term-body">
@@ -85,12 +80,12 @@
           <pre class="term-line"><span class="c-prompt">$</span> <span class="c-cmd">journal count</span></pre>
           <pre class="term-line">6</pre>
           <pre class="term-line"><span class="c-prompt">$</span> <span class="c-cmd">journal count --days</span></pre>
-          <pre class="term-line">2026-08-03</pre>
-          <pre class="term-line">2026-08-04</pre>
-          <pre class="term-line">2026-08-05</pre>
-          <pre class="term-line">2026-08-06</pre>
-          <pre class="term-line">2026-08-07</pre>
-          <pre class="term-line">2026-08-08</pre>
+          <pre class="term-line term-dim">2026-08-03</pre>
+          <pre class="term-line term-dim">2026-08-04</pre>
+          <pre class="term-line term-dim">2026-08-05</pre>
+          <pre class="term-line term-dim">2026-08-06</pre>
+          <pre class="term-line term-dim">2026-08-07</pre>
+          <pre class="term-line term-dim">2026-08-08</pre>
           <pre class="term-line"><span class="c-prompt">$</span> <span class="c-cursor">▋</span></pre>
         </div>
       </div>
@@ -99,36 +94,36 @@
 
   <section class="features" id="features">
     <div class="wrap">
-      <h2 class="section-title">Why <span class="grad">journal</span>?</h2>
+      <h2 class="section-title">Why <span class="box">journal</span>?</h2>
       <p class="section-sub">Everything a tiny journal should be. Nothing it shouldn't.</p>
       <div class="grid">
         <article class="card">
-          <div class="card-icon">📄</div>
+          <span class="card-icon">01 / plain</span>
           <h3>Plain Markdown</h3>
           <p>Your journal is a single readable <code>.md</code> file. No databases, no lock-in — just text you already know how to read.</p>
         </article>
         <article class="card">
-          <div class="card-icon">🗓️</div>
+          <span class="card-icon">02 / days</span>
           <h3>Day tracking</h3>
           <p><code>journal count</code> tells you how many days you've logged. Perfect for streaks, habits, and quiet consistency.</p>
         </article>
         <article class="card">
-          <div class="card-icon">⚡</div>
+          <span class="card-icon">03 / zero</span>
           <h3>Zero config</h3>
           <p><code>pip install -e .</code> and you're done. Entries default to <code>journal.md</code>, or point anywhere with <code>-f</code>.</p>
         </article>
         <article class="card">
-          <div class="card-icon">🕐</div>
+          <span class="card-icon">04 / time</span>
           <h3>Timestamps built-in</h3>
           <p>Every entry is stamped automatically in ISO 8601. Your history sorts itself — no manual dates required.</p>
         </article>
         <article class="card">
-          <div class="card-icon">🔌</div>
+          <span class="card-icon">05 / env</span>
           <h3>Env-friendly</h3>
           <p>Set <code>JOURNAL_FILE</code> to move your journal anywhere. Works great in scripts, crons, and <code>zsh</code> aliases.</p>
         </article>
         <article class="card">
-          <div class="card-icon">🐍</div>
+          <span class="card-icon">06 / api</span>
           <h3>Python API</h3>
           <p>Import <code>append_entry</code>, <code>read_entries</code> and <code>day_count</code> directly — build your own tools on top.</p>
         </article>
@@ -138,9 +133,9 @@
 
   <section class="docs" id="docs">
     <div class="wrap">
-      <h2 class="section-title">Quick <span class="grad">start</span></h2>
+      <h2 class="section-title">Quick <span class="box">start</span></h2>
       <div class="code-block">
-        <div class="code-head"><span>bash</span></div>
+        <div class="code-head">bash</div>
         <pre><code># 1. install
 pip install -e .
 
@@ -180,12 +175,12 @@ export JOURNAL_FILE=~/notes/private/journal.md</code></pre>
 
   <footer class="footer">
     <div class="wrap footer-inner">
-      <p>Built with <span class="heart">♥</span> by <a href="https://github.com/klcombr" target="_blank" rel="noopener">klcombr</a> · MIT License</p>
+      <p>Built with ♥ by <a href="https://github.com/klcombr" target="_blank" rel="noopener">klcombr</a> · MIT License</p>
       <p class="footer-links">
         <a href="https://github.com/klcombr/journal" target="_blank" rel="noopener">Repository</a>
-        <span>·</span>
+        <span>/</span>
         <a href="docs/guide.md">Guide</a>
-        <span>·</span>
+        <span>/</span>
         <a href="docs/changelog.md">Changelog</a>
       </p>
     </div>
