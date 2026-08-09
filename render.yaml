@@ -1,0 +1,20 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# Cria o sync server do journal com um clique (plano free).
+services:
+  - type: web
+    name: journal-server
+    runtime: docker
+    repo: https://github.com/klcombr/journal
+    plan: free
+    dockerfilePath: ./apps/server/Dockerfile
+    autoDeploy: true
+    healthCheckPath: /api/health
+    envVars:
+      - key: JOURNAL_SECRET
+        generateValue: true
+      - key: JOURNAL_CORS_ORIGINS
+        value: https://klcombr.github.io
+    disk:
+      name: journal-data
+      mountPath: /data
+      sizeGB: 1
