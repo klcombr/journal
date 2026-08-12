@@ -73,11 +73,12 @@
 
   var statsEl = document.getElementById("stats");
   if (statsEl && "IntersectionObserver" in window) {
-    new IntersectionObserver(function (entries) {
+    var statsObs = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
-        if (en.isIntersecting) { animateCounters(); io.disconnect(); }
+        if (en.isIntersecting) { animateCounters(); statsObs.disconnect(); }
       });
-    }, { threshold: 0.4 }).observe(statsEl);
+    }, { threshold: 0.4 });
+    statsObs.observe(statsEl);
   } else {
     animateCounters();
   }

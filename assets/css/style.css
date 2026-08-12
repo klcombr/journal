@@ -18,11 +18,18 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--sans);
-  background: var(--paper);
+  background:
+    radial-gradient(rgba(0, 0, 0, 0.055) 1px, transparent 1px),
+    var(--paper);
+  background-size: 24px 24px;
   color: var(--black);
   line-height: 1.55;
   overflow-x: hidden;
 }
+
+::selection { background: var(--black); color: var(--paper); }
+
+#apps, #features, #terminal, #docs, #faq { scroll-margin-top: 72px; }
 
 a { color: var(--black); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
 a:hover { background: var(--black); color: var(--paper); text-decoration: none; }
@@ -144,12 +151,14 @@ code {
 .hero-badge a { text-decoration: none; }
 .hero-badge a:hover { color: var(--paper); }
 .hero-title {
-  font-size: clamp(3rem, 11vw, 7rem);
+  font-size: clamp(1.8rem, 8vw, 6.4rem);
   font-weight: 700;
   letter-spacing: -0.03em;
-  line-height: 0.92;
+  line-height: 0.95;
   text-transform: uppercase;
-  margin-bottom: 30px;
+  text-wrap: balance;
+  max-width: 100%;
+  margin: 0 auto 30px;
 }
 .hero-title .rev {
   background: var(--black);
@@ -422,10 +431,17 @@ details p { color: var(--gray-dark); margin-top: 14px; font-size: 0.95rem; font-
 /* ---------- Reveal ---------- */
 .reveal {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transform: translateY(14px);
+  transition: opacity 0.3s var(--ease-out, ease), transform 0.3s var(--ease-out, ease);
 }
 .reveal.visible { opacity: 1; transform: translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .c-cursor { animation: none; opacity: 1; }
+  .btn, .card, .nav-links a, .theme-toggle, .menu-toggle { transition: none; }
+}
 
 @media (max-width: 760px) {
   .nav-links {
